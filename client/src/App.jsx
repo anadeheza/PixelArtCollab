@@ -1,4 +1,6 @@
 import {useCallback, useState } from 'react'
+import { useSocket } from './hooks/useSocket'
+import Chat from './components/Chat'
 import Canvas from './components/Canvas'
 import Toolbar from './components/Toolbar'
 import ColorPicker from './components/ColorPicker'
@@ -15,6 +17,17 @@ function App() {
   }, [])
 
   const clearCanvas = () => setPixels({})
+
+    const { emitPixel, socket } = useSocket(
+    ({ x, y, color }) => updatePixel(x, y, color),
+    (state) => {
+      Object.entries(state).forEach(([key, color]) => {
+        const [x, y] = key.split(',').map(Number)
+        updatePixel(x, y, color)
+      })
+    },
+    setUsers
+  )
 
   return (
     <div className='min-h-screen bg-taupe-900 text-white flex flex-col items-center justify-center gap-4 p-6 font-mono'>

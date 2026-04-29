@@ -5,7 +5,7 @@ const CELL_SIZE = 16  // px por celda en pantalla
 const GRID_COLS = 60
 const GRID_ROWS = 32
 
-export default function Canvas({pixels, selectedColor, tool, updatePixel, setUsers }) {
+export default function Canvas({pixels, selectedColor, tool, updatePixel, setUsers, emitPixel }) {
   const canvasRef = useRef(null)
   const isDrawing = useRef(false)
 

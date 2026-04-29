@@ -30,4 +30,14 @@ io.on('connection', (socket) => {
   })
 })
 
+socket.on('chat:message', (text) => {
+    const msg = {
+        userId: socket.id.slice(0, 5),
+        text,
+        self: false,
+    }
+    socket.broadcast.emit('chat:message', msg)
+    socket.emit('chat:message', { ...msg, self: true})
+})
+
 httpServer.listen(3001, () => console.log('Servidor en http://localhost:3001'))
