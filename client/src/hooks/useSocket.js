@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react'
 import { io } from 'socket.io-client'
 
 const URL = import.meta.env.PROD
-  ? 'https://pixelartcollab.onrender.com'
+  ? 'https://pixelartcollab.onrender.com/'
   : 'http://localhost:3001'
 
 
