@@ -100,8 +100,8 @@ export default function Canvas({gridSize, pixels, selectedColor, tool, updatePix
       Object.entries(filled).forEach(([key, color]) => {
         const [x, y] = key.split(',').map(Number)
         updatePixel(x, y, color)
-        emitPixel(x, y, color)
       })
+      emitPixel('fill', filled)
       return
     }
 
