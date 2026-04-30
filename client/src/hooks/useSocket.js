@@ -1,6 +1,12 @@
 import { useEffect, useRef } from 'react'
 import { io } from 'socket.io-client'
 
+const URL = import.meta.env.PROD
+  ? 'https://pixelartcollab.onrender.com/'
+  : 'http://localhost:3001'
+
+const socket = io(URL, 'https://pixelartcollab.onrender.com/')
+
 export function useSocket(onPixelDraw, onCanvasInit, setUsers) {
   const socketRef = useRef(null)
 
