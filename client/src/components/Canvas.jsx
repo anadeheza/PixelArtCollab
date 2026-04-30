@@ -7,6 +7,11 @@ const GRID_ROWS = 32
 export default function Canvas({pixels, selectedColor, tool, updatePixel, emitPixel, emitFill }) {
   const canvasRef = useRef(null)
   const isDrawing = useRef(false)
+  const toolRef = useRef(tool)
+
+  useEffect(() => {
+    toolRef.current = tool      
+  }, [tool])
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -52,9 +57,9 @@ export default function Canvas({pixels, selectedColor, tool, updatePixel, emitPi
     const cell = getCellFromEvent(e)
     if (!cell) return
 
-    if (tool === 'fill') return  
+    if (toolRef.current === 'fill') return  
 
-    const color = tool === 'erase' ? '#ffffff' : selectedColor
+    const color = toolRef.current === 'erase' ? '#ffffff' : selectedColor
     updatePixel(cell.x, cell.y, color)
     emitPixel(cell.x, cell.y, color)
   }
@@ -62,7 +67,7 @@ export default function Canvas({pixels, selectedColor, tool, updatePixel, emitPi
   const handleMouseDown = (e) => {
     isDrawing.current = true
 
-    if (tool === 'fill') {
+    if (toolRef.current === 'fill') {
       const filled = {}
       for (let x = 0; x < GRID_COLS; x++) {
         for (let y = 0; y < GRID_ROWS; y++) {
