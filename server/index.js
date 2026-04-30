@@ -4,12 +4,17 @@ import { Server } from 'socket.io'
 import cors from 'cors'
 import { randomUUID } from 'crypto'
 
+
 const app = express()
 app.use(cors())
 
 const httpServer = createServer(app)
 const io = new Server(httpServer, {
-  cors: { origin: 'http://localhost:5173', methods: ['GET', 'POST'] }
+  cors: {
+    origin: ['http://localhost:5173', 'https://anadeheza.github.io'],
+    methods: ['GET', 'POST']
+  }
+
 })
 
 let canvasState = {}
@@ -58,4 +63,5 @@ io.on('connection', (socket) => {
 
 })
 
-httpServer.listen(3001, () => console.log('Servidor en http://localhost:3001'))
+const PORT = process.env.PORT || 3001
+httpServer.listen(PORT, () => console.log(`Server on port ${PORT}`))
