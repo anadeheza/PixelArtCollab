@@ -5,7 +5,6 @@ const URL = import.meta.env.PROD
   ? 'https://pixelartcollab.onrender.com/'
   : 'http://localhost:3001'
 
-const socket = io(URL, 'https://pixelartcollab.onrender.com/')
 
 export function useSocket(onPixelDraw, onCanvasInit, setUsers) {
   const socketRef = useRef(null)
@@ -13,7 +12,7 @@ export function useSocket(onPixelDraw, onCanvasInit, setUsers) {
   useEffect(() => {
     if(socketRef.current) return
 
-    socketRef.current = io()
+    socketRef.current = io()(URL)
 
     socketRef.current.on('canvas:init', onCanvasInit)
     socketRef.current.on('pixel:draw', onPixelDraw)
