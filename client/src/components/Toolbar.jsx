@@ -16,7 +16,7 @@ export default function Toolbar({ tool, setTool, onClear}) {
                         title={t.label}
                         className={`px-3 py-1.5 rounded-lg text-sm transition-all ${
                             tool === t.id
-                            ? 'bg-emerald-500 text-black font-bold'
+                            ? 'bg-rose-300 text-black font-bold'
                             : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
                         }`}
                     >

@@ -7,7 +7,7 @@ const PALETTE = [
 export default function ColorPicker({color, onChange}) {
     return (
         <div className="flex flex-col gap-2">
-            <span className="text-xs text-zinc-500 uppercase tracking-widest">Color</span>
+            <span className="text-xs text-zinc-500 uppercase tracking-widest">Colors</span>
             <div className="flex items-center gap-2">
                 <label className="relative cursor-pointer">
                     <div 

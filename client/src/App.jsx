@@ -36,7 +36,7 @@ return (
         PixelArtCollab
       </h1>
       <span className='text-xs bg-taupe-700 px-2 py-1 rounded-full text-zinc-400'>
-        🟢 {users} conectado{users !== 1 ? 's' : ''}
+        ● {users} conected{users !== 1 ? 's' : ''}
       </span>
     </div>
 
@@ -54,7 +54,7 @@ return (
       <Toolbar tool={tool} setTool={setTool} onClear={clearCanvas} />
     </div>
 
-    <Chat socket={socket} /> 
+    <Chat socket={socket.current} /> 
   </div>
 )
 
