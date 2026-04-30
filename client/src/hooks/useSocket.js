@@ -1,10 +1,6 @@
 import { useEffect, useRef } from 'react'
-import { io } from 'socket.io-client'
-
-const URL = import.meta.env.PROD
-  ? 'https://pixelartcollab.onrender.com/'
-  : 'http://localhost:3001'
-
+import * as SocketIO from 'socket.io-client'
+const io = SocketIO.io ?? SocketIO.default
 
 export function useSocket(onPixelDraw, onCanvasInit, setUsers) {
   const socketRef = useRef(null)
@@ -12,8 +8,10 @@ export function useSocket(onPixelDraw, onCanvasInit, setUsers) {
   useEffect(() => {
     if(socketRef.current) return
 
-    socketRef.current = io()(URL)
-
+    socketRef.current = io('https://pixelartcollab.onrender.com', {
+      transports: ['websocket', 'polling'],
+    })
+ 
     socketRef.current.on('canvas:init', onCanvasInit)
     socketRef.current.on('pixel:draw', onPixelDraw)
     socketRef.current.on('users:count', (count) => setUsers(count))
