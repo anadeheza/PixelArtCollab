@@ -62,7 +62,8 @@ io.on('connection', (socket) => {
   })
 
   socket.on('canvas:fill', (filledPixels) => {
-    Object.assign(canvasState, filledPixels)  // update server state
+    console.log('canvas:fill received, keys:', Object.keys(filledPixels).length)  // ← add this
+    Object.assign(canvasState, filledPixels)  
     socket.broadcast.emit('canvas:fill', filledPixels)
   })
 

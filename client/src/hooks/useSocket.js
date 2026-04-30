@@ -36,5 +36,9 @@ export function useSocket(onPixelDraw, onCanvasInit, setUsers) {
     socketRef.current?.emit('canvas:fill', filledPixels)
   }
 
+  socketRef.current.on('canvas:clear', () => {
+    onCanvasInit({}) 
+  })
+
   return { emitPixel, emitFill, socket: socketRef }
 }
