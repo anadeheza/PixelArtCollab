@@ -62,17 +62,6 @@ export default function App() {
     setPixels(prev => ({ ...prev, [`${x},${y}`]: color}))
   }, [])
 
-  const { emitPixel, socket } = useSocket(
-    ({ x, y, color }) => updatePixel(x, y, color),
-    (state) => {
-      Object.entries(state).forEach(([key, color]) => {
-        const [x, y] = key.split(',').map(Number)
-        updatePixel(x, y, color)
-      })
-    },
-    setUsers
-  )
-
   const handleNameSubmit = (name) => {
     setUsername(name)
     socket.current?.emit('user:setName', name)
