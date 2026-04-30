@@ -48,37 +48,6 @@ export default function Canvas({pixels, selectedColor, tool, updatePixel, emitPi
     return { x, y }
   }
 
-  const floodFill = (startX, startY, fillColor, currentPixels) => {
-    const key = `${startX},${startY}`
-    const targetColor = currentPixels[key] || '#ffffff'
-    if (targetColor === fillColor) return {}
-
-    const filled = {}
-    const stack = [[startX, startY]]
-    const visited = new Set()
-
-    while (stack.length > 0) {
-      const [cx, cy] = stack.pop()
-      const ck = `${cx},${cy}`
-      
-      if (visited.has(ck)) continue
-      
-      if (cx < 0 || cy < 0 || cx >= GRID_COLS || cy >= GRID_ROWS) continue
-      const cellColor = currentPixels[ck] || '#ffffff'
-      if (cellColor !== targetColor) continue
-
-      visited.add(ck)
-      filled[ck] = fillColor
-
-      const neighbors = [[cx + 1, cy], [cx - 1, cy], [cx, cy + 1], [cx, cy - 1]]
-      for(const [nx, ny] of neighbors) {
-        const nk = `${nx},${ny}`
-        if(!visited.has(nk)) stack.push([nx, ny])
-      }
-    } 
-    return filled
-  }
-
   const drawAt = (e) => {
     const cell = getCellFromEvent(e)
     if (!cell) return
@@ -91,14 +60,15 @@ export default function Canvas({pixels, selectedColor, tool, updatePixel, emitPi
   }
 
   const handleMouseDown = (e) => {
-    console.log('mousedown fired, tool is:', tool)  // ← add this
-
     isDrawing.current = true
 
     if (tool === 'fill') {
-      const cell = getCellFromEvent(e)
-      if (!cell) return
-      const filled = floodFill(cell.x, cell.y, selectedColor, pixels)
+      const filled = {}
+      for (let x = 0; x < GRID_COLS; x++) {
+        for (let y = 0; y < GRID_ROWS; y++) {
+          filled[`${x},${y}`] = selectedColor
+        }
+      }
       Object.entries(filled).forEach(([key, color]) => {
         const [x, y] = key.split(',').map(Number)
         updatePixel(x, y, color)
