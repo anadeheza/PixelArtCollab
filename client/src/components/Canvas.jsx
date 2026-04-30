@@ -73,7 +73,7 @@ export default function Canvas({gridSize, pixels, selectedColor, tool, updatePix
       const neighbors = [[cx + 1, cy], [cx - 1, cy], [cx, cy + 1], [cx, cy - 1]]
       for(const [nx, ny] of neighbors) {
         const nk = `${nx},${ny}`
-        if(!visited.has(ck)) stack.push([nx, ny])
+        if(!visited.has(nk)) stack.push([nx, ny])
       }
     } 
     return filled
