@@ -15,6 +15,12 @@ export function useSocket(onPixelDraw, onCanvasInit, setUsers) {
     socketRef.current.on('canvas:init', onCanvasInit)
     socketRef.current.on('pixel:draw', onPixelDraw)
     socketRef.current.on('users:count', (count) => setUsers(count))
+    socketRef.current.on('canvas:fill', (filledPixels) => {
+      Object.entries(filledPixels).forEach(([key, color]) => {
+        const [x, y] = key.split(',').map(Number)
+        onPixelDraw({ x, y, color })
+      })
+    })
 
     return () => {
         socketRef.current?.disconnect()
@@ -26,5 +32,9 @@ export function useSocket(onPixelDraw, onCanvasInit, setUsers) {
     socketRef.current?.emit('pixel:draw', { x, y, color })
   }
 
-  return { emitPixel, socket: socketRef }
+   const emitFill = (filledPixels) => {
+    socketRef.current?.emit('canvas:fill', filledPixels)
+  }
+
+  return { emitPixel, emitFill, socket: socketRef }
 }

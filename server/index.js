@@ -61,6 +61,15 @@ io.on('connection', (socket) => {
     console.log('Usuario desconectado:', socket.id)
   })
 
+  socket.on('canvas:fill', (filledPixels) => {
+    Object.assign(canvasState, filledPixels)  // update server state
+    socket.broadcast.emit('canvas:fill', filledPixels)
+  })
+
+  socket.on('canvas:clear', () => {
+    canvasState = {}
+    socket.broadcast.emit('canvas:clear')
+  })
 })
 
 const PORT = process.env.PORT || 3001

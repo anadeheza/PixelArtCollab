@@ -78,7 +78,26 @@ export default function App() {
     socket.current?.emit('user:setName', name)
   }
 
-  const clearCanvas = () => setPixels({})  
+  const { emitPixel, emitFill, socket } = useSocket(
+    ({ x, y, color }) => updatePixel(x, y, color),
+    (state) => {
+      Object.entries(state).forEach(([key, color]) => {
+        const [x, y] = key.split(',').map(Number)
+        updatePixel(x, y, color)
+      })
+    },
+    setUsers
+  )
+
+  useEffect(() => {
+    socket.current?.on('canvas:clear', () => setPixels({}))
+    return () => socket.current?.off('canvas:clear')
+  }, [socket.current])
+
+  const clearCanvas = () => {
+    setPixels({})
+    socket.current?.emit('canvas:clear')
+  }
 
   return (
     <div className='min-h-screen bg-taupe-900 text-white flex flex-col items-center justify-center gap-4 p-6 font-mono'>
@@ -104,6 +123,7 @@ export default function App() {
         tool={tool}
         updatePixel={updatePixel}
         emitPixel={emitPixel}
+        emitFill={emitFill}
       />
  
       <div className='flex items-center gap-6 bg-zinc-900 border border-zinc-700 rounded-xl px-6 py-4'>

@@ -4,7 +4,7 @@ const CELL_SIZE = 16  // px por celda en pantalla
 const GRID_COLS = 60
 const GRID_ROWS = 32
 
-export default function Canvas({gridSize, pixels, selectedColor, tool, updatePixel, emitPixel }) {
+export default function Canvas({pixels, selectedColor, tool, updatePixel, emitPixel, emitFill }) {
   const canvasRef = useRef(null)
   const isDrawing = useRef(false)
 
@@ -101,7 +101,7 @@ export default function Canvas({gridSize, pixels, selectedColor, tool, updatePix
         const [x, y] = key.split(',').map(Number)
         updatePixel(x, y, color)
       })
-      emitPixel('fill', filled)
+      emitFill(filled)
       return
     }
 
