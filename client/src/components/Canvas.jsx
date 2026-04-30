@@ -78,7 +78,8 @@ export default function Canvas({pixels, selectedColor, tool, updatePixel, emitPi
         const [x, y] = key.split(',').map(Number)
         updatePixel(x, y, color)
       })
-      emitFill(filled)
+      emitFill(selectedColor)
+      isDrawing.current = false
       return
     }
 

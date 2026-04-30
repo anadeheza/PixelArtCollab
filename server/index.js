@@ -61,10 +61,13 @@ io.on('connection', (socket) => {
     console.log('Usuario desconectado:', socket.id)
   })
 
-  socket.on('canvas:fill', (filledPixels) => {
-    console.log('canvas:fill received, keys:', Object.keys(filledPixels).length)  // ← add this
-    Object.assign(canvasState, filledPixels)  
-    socket.broadcast.emit('canvas:fill', filledPixels)
+  socket.on('canvas:fill', (color) => {
+    for (let x = 0; x < 60; x++) {
+      for (let y = 0; y < 32; i++) {
+        canvasState[`${x},${y}`] = color
+      }
+    }
+    socket.broadcast.emit('canvas:fill', color)
   })
 
   socket.on('canvas:clear', () => {

@@ -62,11 +62,6 @@ export default function App() {
     setPixels(prev => ({ ...prev, [`${x},${y}`]: color}))
   }, [])
 
-  const handleNameSubmit = (name) => {
-    setUsername(name)
-    socket.current?.emit('user:setName', name)
-  }
-
   const { emitPixel, emitFill, socket } = useSocket(
     ({ x, y, color }) => updatePixel(x, y, color),
     (state) => {
@@ -82,6 +77,12 @@ export default function App() {
     socket.current?.on('canvas:clear', () => setPixels({}))
     return () => socket.current?.off('canvas:clear')
   }, [socket.current])
+
+  
+  const handleNameSubmit = (name) => {
+    setUsername(name)
+    socket.current?.emit('user:setName', name)
+  }
 
   const clearCanvas = () => {
     setPixels({})
