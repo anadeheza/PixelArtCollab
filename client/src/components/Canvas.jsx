@@ -91,6 +91,8 @@ export default function Canvas({pixels, selectedColor, tool, updatePixel, emitPi
   }
 
   const handleMouseDown = (e) => {
+    console.log('mousedown fired, tool is:', tool)  // ← add this
+
     isDrawing.current = true
 
     if (tool === 'fill') {
