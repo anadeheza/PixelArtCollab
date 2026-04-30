@@ -13,17 +13,24 @@ const io = new Server(httpServer, {
 })
 
 let canvasState = {}
+const userNames = {}
 
 io.on('connection', (socket) => {
   console.log('Usuario conectado:', socket.id)
+  userNames[socket.id] = socket.id.slice(0, 5)
 
   socket.emit('canvas:init', canvasState)
   io.emit('users:count', io.engine.clientsCount)
 
+  socket.on('user:setName', (name) => {
+    const trimmed = String(name).trim().slice(0, 24)
+    userNames[socket.id] = trimmed || socket.id.slice(0, 5)
+  })
+
   socket.on('chat:message', (text) => {
     const msg = {
       id: randomUUID(),
-      userId: socket.id.slice(0, 5),
+      userId: userNames[socket.id],
       text,
       self: false,
     }
@@ -41,7 +48,11 @@ io.on('connection', (socket) => {
   })
 
   socket.on('disconnect', () => {
-    io.emit('users:count', io.engine.clientsCount)
+    delete userNames[socket.id]
+    const remaining = io.engine.clientsCount
+    if(!remaining) canvasState = {}
+
+    io.emit('users:count', remaining)
     console.log('Usuario desconectado:', socket.id)
   })
 

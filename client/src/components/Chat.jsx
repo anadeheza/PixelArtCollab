@@ -13,16 +13,6 @@ export default function Chat({ socket }) {
     }, [isOpen])
 
     useEffect(() => {
-        
-        if(!socket) return 
-        socket.on('chat:message', (msg) => {
-            setMessages(prev => [ ...prev, msg])
-            if(!isOpen) setUnread(prev => prev + 1)
-        })
-        return () => socket.off('chat:message')
-    }, [socket, isOpen])
-
-    useEffect(() => {
         if(!socket) return 
 
         const handleMessage = (msg) => {
@@ -77,7 +67,6 @@ export default function Chat({ socket }) {
 
     return (
         <>
-            {/* Toggle button */}
             {!isOpen && (
                 <button
                     onClick={() => setIsOpen(true)}
@@ -93,11 +82,9 @@ export default function Chat({ socket }) {
                     </span>
                 </button>
             )}
-
-            {/* Panel */}
+ 
             <div className={`fixed right-0 top-0 h-full w-72 bg-zinc-900 border-l border-zinc-700 flex flex-col z-40 transition-transform duration-300 ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}>
-                
-                {/* Header */}
+ 
                 <div className="flex items-center justify-between px-4 py-3 border-b border-zinc-700">
                     <span className="font-bold tracking-widest text-rose-300 uppercase text-s">Chat</span>
                     <div className="flex items-center gap-2">
@@ -106,13 +93,12 @@ export default function Chat({ socket }) {
                             className="text-zinc-500 hover:text-red-400 text-xs transition-colors"
                             title="Clear chat"
                         >
-                            Clear 
+                            Clear
                         </button>
                         <button onClick={() => setIsOpen(false)} className="text-zinc-500 hover:text-white transition-colors">✕</button>
                     </div>
                 </div>
-
-                {/* Messages */}
+ 
                 <div className="flex-1 overflow-y-auto px-4 py-3 flex flex-col gap-2">
                     {messages.length === 0 && (
                         <p className="text-zinc-600 text-xs text-center mt-4">No messages yet...</p>
@@ -130,7 +116,6 @@ export default function Chat({ socket }) {
                                         🗑
                                     </button>
                                 )}
-
                                 {msg.deleted ? (
                                     <span className="px-3 py-1.5 rounded-2xl text-sm max-w-[85%] italic text-zinc-500 bg-zinc-800/50">
                                         Message deleted
@@ -145,10 +130,9 @@ export default function Chat({ socket }) {
                             </div>
                         </div>
                     ))}
-                <div ref={bottomRef} />
+                    <div ref={bottomRef} />
                 </div>
-
-                {/* Input */}
+ 
                 <div className="px-4 py-3 border-t border-zinc-700 flex gap-2">
                     <input
                         type="text"

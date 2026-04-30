@@ -8,19 +8,6 @@ export default function Canvas({gridSize, pixels, selectedColor, tool, updatePix
   const canvasRef = useRef(null)
   const isDrawing = useRef(false)
 
-  // --- Socket ---
-  const handleRemotePixel = useCallback(({ x, y, color }) => {
-    updatePixel(x, y, color)
-  }, [updatePixel])
-
-  const handleCanvasInit = useCallback((state) => {
-    Object.entries(state).forEach(([key, color]) => {
-      const [x, y] = key.split(',').map(Number)
-      updatePixel(x, y, color)
-    })
-  }, [updatePixel])
-
-
   useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas) return
@@ -67,12 +54,13 @@ export default function Canvas({gridSize, pixels, selectedColor, tool, updatePix
     if (targetColor === fillColor) return {}
 
     const filled = {}
-    const queue = [[startX, startY]]
+    const stack = [[startX, startY]]
     const visited = new Set()
 
-    while (queue.length > 0) {
-      const [cx, cy] = queue.shift()
+    while (stack.length > 0) {
+      const [cx, cy] = stack.pop()
       const ck = `${cx},${cy}`
+      
       if (visited.has(ck)) continue
       
       if (cx < 0 || cy < 0 || cx >= GRID_COLS || cy >= GRID_ROWS) continue
@@ -82,8 +70,12 @@ export default function Canvas({gridSize, pixels, selectedColor, tool, updatePix
       visited.add(ck)
       filled[ck] = fillColor
 
-      queue.push([cx + 1, cy], [cx - 1, cy], [cx, cy + 1], [cx, cy - 1])
-    }
+      const neighbors = [[cx + 1, cy], [cx - 1, cy], [cx, cy + 1], [cx, cy - 1]]
+      for(const [nx, ny] of neighbors) {
+        const nk = `${nx},${ny}`
+        if(!visited.has(ck)) stack.push([nx, ny])
+      }
+    } 
     return filled
   }
 
