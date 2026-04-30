@@ -15,6 +15,11 @@ const io = new Server(httpServer, {
 let canvasState = {}
 
 io.on('connection', (socket) => {
+  console.log('Usuario conectado:', socket.id)
+
+  socket.emit('canvas:init', canvasState)
+  io.emit('users:count', io.engine.clientsCount)
+
   socket.on('chat:message', (text) => {
     const msg = {
       id: randomUUID(),
@@ -30,11 +35,6 @@ io.on('connection', (socket) => {
     io.emit('chat:delete', id)
   })
 
-  console.log('Usuario conectado:', socket.id)
-
-  socket.emit('canvas:init', canvasState)
-  io.emit('users:count', io.engine.clientsCount)
-
   socket.on('pixel:draw', ({ x, y, color }) => {
     canvasState[`${x},${y}`] = color
     socket.broadcast.emit('pixel:draw', { x, y, color })
@@ -44,16 +44,6 @@ io.on('connection', (socket) => {
     io.emit('users:count', io.engine.clientsCount)
     console.log('Usuario desconectado:', socket.id)
   })
-
-  socket.on('chat:message', (text) => {
-    const msg = {
-        userId: socket.id.slice(0, 5),
-        text,
-        self: false,
-    }
-    socket.broadcast.emit('chat:message', msg)
-    socket.emit('chat:message', { ...msg, self: true})
-    })
 
 })
 

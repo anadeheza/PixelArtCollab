@@ -5,7 +5,12 @@ export default function Chat({ socket }) {
     const [messages, setMessages] = useState([])
     const [input, setInput] = useState('')
     const [unread, setUnread] = useState(0)
+    const isOpenRef = useRef(false)
     const bottomRef = useRef(null)
+
+    useEffect(() => {
+        isOpenRef.current = isOpen
+    }, [isOpen])
 
     useEffect(() => {
         
@@ -19,10 +24,30 @@ export default function Chat({ socket }) {
 
     useEffect(() => {
         if(!socket) return 
-        socket.on('chat:delete', (id) => {
-            setMessages(prev => prev.filter((_, i) => i != id))
-        })
-        return () => socket.off('chat:delete')
+
+        const handleMessage = (msg) => {
+            setMessages(prev => [...prev, msg])
+            if (!isOpenRef.current) setUnread(prev => prev + 1)
+        }
+
+        const handleDelete = (id) => {
+            setMessages(prev => 
+                prev.map(msg => 
+                    msg.id === id 
+                    ? {...msg, text: null, deleted: true}
+                    : msg 
+                )
+            )
+        }
+
+        socket.on('chat:message', handleMessage)
+        socket.on('chat:delete', handleDelete)
+
+        return() => {
+            socket.off('chat:message', handleMessage)
+            socket.off('chat:delete', handleDelete)
+        }
+
     }, [socket])
 
     useEffect(() => {
@@ -89,31 +114,37 @@ export default function Chat({ socket }) {
 
                 {/* Messages */}
                 <div className="flex-1 overflow-y-auto px-4 py-3 flex flex-col gap-2">
-                {messages.length === 0 && (
-                    <p className="text-zinc-600 text-xs text-center mt-4">No messages yet...</p>
-                )}
-                {messages.map((msg, i) => (
-                    <div key={i} className={`flex flex-col ${msg.self ? 'items-end' : 'items-start'}`}>
-                    <span className="text-zinc-500 text-xs mb-0.5">{msg.self ? 'You' : msg.userId}</span>
-                        <div className="flex items-center gap-1">
-                            {msg.self && (
-                                <button
-                                    onClick={() => deleteMessage(msg.id)}
-                                    className="text-zinc-300 hover:text-red-400 text-sm transition-colors"
-                                    title="Delete for everyone"
-                                >
-                                    🗑 
-                                </button>
-                            )}
-                        
-                            <span className={`px-3 py-1.5 rounded-2xl text-sm max-w-[85%] break-words ${
-                                msg.self ? 'bg-rose-400 text-black' : 'bg-zinc-800 text-white'
-                            }`}>
-                                {msg.text}
-                            </span>
+                    {messages.length === 0 && (
+                        <p className="text-zinc-600 text-xs text-center mt-4">No messages yet...</p>
+                    )}
+                    {messages.map((msg) => (
+                        <div key={msg.id} className={`flex flex-col ${msg.self ? 'items-end' : 'items-start'}`}>
+                            <span className="text-zinc-500 text-xs mb-0.5">{msg.self ? 'You' : msg.userId}</span>
+                            <div className="flex items-center gap-1">
+                                {msg.self && !msg.deleted && (
+                                    <button
+                                        onClick={() => deleteMessage(msg.id)}
+                                        className="text-zinc-300 hover:text-red-400 text-sm transition-colors"
+                                        title="Delete for everyone"
+                                    >
+                                        🗑
+                                    </button>
+                                )}
+
+                                {msg.deleted ? (
+                                    <span className="px-3 py-1.5 rounded-2xl text-sm max-w-[85%] italic text-zinc-500 bg-zinc-800/50">
+                                        Message deleted
+                                    </span>
+                                ) : (
+                                    <span className={`px-3 py-1.5 rounded-2xl text-sm max-w-[85%] break-words ${
+                                        msg.self ? 'bg-rose-400 text-black' : 'bg-zinc-800 text-white'
+                                    }`}>
+                                        {msg.text}
+                                    </span>
+                                )}
+                            </div>
                         </div>
-                    </div>
-                ))}
+                    ))}
                 <div ref={bottomRef} />
                 </div>
 

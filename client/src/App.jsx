@@ -36,7 +36,7 @@ return (
         PixelArtCollab
       </h1>
       <span className='text-xs bg-taupe-700 px-2 py-1 rounded-full text-zinc-400'>
-        ● {users} conected{users !== 1 ? 's' : ''}
+        ● {users} conected
       </span>
     </div>
 
