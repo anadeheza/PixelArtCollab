@@ -1,11 +1,10 @@
 import { useEffect, useRef, useCallback } from 'react'
-import { useSocket } from '../hooks/useSocket'
 
 const CELL_SIZE = 16  // px por celda en pantalla
 const GRID_COLS = 60
 const GRID_ROWS = 32
 
-export default function Canvas({pixels, selectedColor, tool, updatePixel, setUsers, emitPixel }) {
+export default function Canvas({gridSize, pixels, selectedColor, tool, updatePixel, emitPixel }) {
   const canvasRef = useRef(null)
   const isDrawing = useRef(false)
 
@@ -21,7 +20,6 @@ export default function Canvas({pixels, selectedColor, tool, updatePixel, setUse
     })
   }, [updatePixel])
 
-  const { emitPixel, usersCount } = useSocket(handleRemotePixel, handleCanvasInit, setUsers)
 
   useEffect(() => {
     const canvas = canvasRef.current

@@ -28,9 +28,8 @@ io.on('connection', (socket) => {
     io.emit('users:count', io.engine.clientsCount)
     console.log('Usuario desconectado:', socket.id)
   })
-})
 
-socket.on('chat:message', (text) => {
+  socket.on('chat:message', (text) => {
     const msg = {
         userId: socket.id.slice(0, 5),
         text,
@@ -38,6 +37,8 @@ socket.on('chat:message', (text) => {
     }
     socket.broadcast.emit('chat:message', msg)
     socket.emit('chat:message', { ...msg, self: true})
+})
+
 })
 
 httpServer.listen(3001, () => console.log('Servidor en http://localhost:3001'))

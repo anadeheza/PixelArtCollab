@@ -23,5 +23,5 @@ export function useSocket(onPixelDraw, onCanvasInit, setUsers) {
     socketRef.current?.emit('pixel:draw', { x, y, color })
   }
 
-  return { emitPixel, socket: socketRef.current }
+  return { emitPixel, socket: socketRef }
 }

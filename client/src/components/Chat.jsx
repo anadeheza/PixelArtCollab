@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, use } from "react";
+import { useState, useEffect, useRef } from "react";
 
 export default function Chat({ socket }) {
     const [isOpen, setIsOpen] = useState(false)
@@ -8,12 +8,13 @@ export default function Chat({ socket }) {
     const bottomRef = useRef(null)
 
     useEffect(() => {
-        if(!socket) return 
-        socket.on('chat:message', (msg) => {
+        
+        if(!socket?.current) return 
+        socket.current.on('chat:message', (msg) => {
             setMessages(prev => [ ...prev, msg])
             if(!isOpen) setUnread(prev => prev + 1)
         })
-        return () => socket.off('chat:message')
+        return () => socket.curent?.off('chat:message')
     }, [socket, isOpen])
 
     useEffect(() => {
@@ -24,6 +25,7 @@ export default function Chat({ socket }) {
     }, [isOpen, messages])
 
     const sendMessage = () => {
+        socket.current?.emit('chat:message', input.trim())
         if(!input.trim() || !socket) return 
         socket.emit('chat:message', input.trim())
         setInput('')

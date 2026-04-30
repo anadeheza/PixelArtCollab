@@ -8,7 +8,8 @@ export default defineConfig({
     proxy: {
       '/socket.io': {
         target: 'http://localhost:3001',
-        ws: true,          // ← crucial para WebSockets
+        ws: true,      
+        changeOrigin: true
       }
     }
   }
